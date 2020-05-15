@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
+from api.views import product
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path('api/v1/', include('api.urls')),
-    # path('', include('rest_framework.urls')),
+    path('products/', product.ProductList.as_view(), name='product_list'),
+    path('products/<int:product_id>/', product.ProductDetail.as_view(), name='product_detail'),
 ]
