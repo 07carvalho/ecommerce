@@ -10,4 +10,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ('visible',)
+
+
+class ProductResumeSerializer(serializers.ModelSerializer):
+
+    slug = serializers.SlugField(read_only=True)
+
+    class Meta:
+        model = Product
+        exclude = ('visible', 'created_at', 'updated_at',)

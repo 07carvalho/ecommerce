@@ -22,10 +22,14 @@ class Product(models.Model):
         return '{0} por R$ {1}'.format(self.title, self.price)
 
     def save(self, *args, **kwargs):
-        self.slug = self.slug_generator(self.title)
+        self.slug = self.slug_generator()
         super(Product, self).save(*args, **kwargs)
 
-    @staticmethod
-    def slug_generator(self, title: str) -> str:
+    def update(self, instance, **data):
+        instance.title = data.title
+        instance.slug = self.slug_generator()
+        instance.save()
+
+    def slug_generator(self):
         """Generate a slug based in the product title."""
-        return slugify(title)
+        return slugify(self.title)
