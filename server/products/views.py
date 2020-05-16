@@ -1,10 +1,9 @@
-from django.utils.translation import ugettext_lazy as _
 from rest_framework import generics, serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from api.models.product import Product
-from api.serializers.product import ProductSerializer
-from ..permissions import IsAdminOrReadOnly
+from .models import Product
+from .serializers import ProductSerializer
+from .permissions import IsAdminOrReadOnly
 
 
 class ProductList(generics.ListCreateAPIView):

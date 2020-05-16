@@ -11,11 +11,12 @@ class Product(models.Model):
     image = models.ImageField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     visible = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        app_label = 'api'
+        app_label = 'products'
+        db_table = 'api_product'
 
     def __str__(self):
         return '{0} por R$ {1}'.format(self.title, self.price)
@@ -24,7 +25,7 @@ class Product(models.Model):
         self.slug = self.slug_generator(self.title)
         super(Product, self).save(*args, **kwargs)
 
+    @staticmethod
     def slug_generator(self, title: str) -> str:
         """Generate a slug based in the product title."""
         return slugify(title)
-
