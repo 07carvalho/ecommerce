@@ -9,11 +9,12 @@ An e-commerce API with Django
 
 #### Init
 In the root project, run:
-`docker-compose build`
-Then, run:
-`docker-compose up`
-For a better experience, use the Browsable API in
+> docker-compose build
 
+Then, run:
+> docker-compose up
+
+For a better experience, use the Browsable API in
 > [localhost:8000/login/](http://localhost:8000/login/)
  
 ## API Routes
@@ -77,6 +78,16 @@ Logged User clear own Cart.
 | Data Params | None |
 | Samples Call | `curl -d --request DELETE 'http://localhost:8000/api/v1/carts/products/'` |
 
+#### Remove a single Product from User's Cart
+Logged User remove a Product from own Cart.
+| Field | Description |
+|--|--|
+| URL | [/api/v1/carts/products/:id/](http://localhost:8000/api/v1/carts/products/1/) |
+| Method | `DELETE` |
+| URL Params | **Required** <br> `id=[int]` <br><br> **Optional** <br> None |
+| Data Params | None |
+| Samples Call | `curl -d --request DELETE 'http://localhost:8000/api/v1/carts/products/1/'` |
+
 #### List User's Order
 Logged User list all own orders.
 | Field | Description |
@@ -97,6 +108,6 @@ Logged User make a Order only if has Products in the Cart.
 | Data Params | `{"address": {"address": [string],  "state": [string], "country": [string], "zip_code": [string]}}` <br><br> **Example** <br> `{"address": {"address": "Street, number, Town",  "state": "State", "country": "Country", "zip_code": "00000-000"}}` |
 | Samples Call | `curl -d '{"address": {"address": "Street, number, Town",  "state": "State", "country": "Country", "zip_code": "00000-000"}}' --request POST 'http://localhost:8000/api/v1/orders/'` |
 
-## Tests
+### Tests
 Run tests with
-`docker-compose run api test`
+> docker-compose run api test
