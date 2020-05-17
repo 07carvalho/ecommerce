@@ -11,7 +11,6 @@ class OrderAddressSerializer(serializers.ModelSerializer):
 
 class OrderItemResumeSerializer(serializers.ModelSerializer):
     """Return Products instances only with relevant fields to the Cart context"""
-
     class Meta:
         model = OrderItem
         exclude = ('order',)
@@ -26,7 +25,6 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        # fields = '__all__'
         exclude = ('user',)
 
     def create(self, validated_data):
@@ -39,11 +37,3 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_total(self, obj):
         return obj.get_total()
-
-
-    # def __init__(self, *args, **kwargs):
-    #     super(CartItemSerializer, self).__init__(*args, **kwargs)
-    #     user = self.context['request'].user
-    #     # overriding field to Browsable API show only user's cart in option
-    #     self.fields['cart'] = PrimaryKeyRelatedField(queryset=Cart.objects.filter(owner=user), required=True)
-    #     self.fields['product'] = PrimaryKeyRelatedField(queryset=Product.objects.filter(visible=True), required=True)

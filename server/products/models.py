@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.utils.text import slugify
 
@@ -12,7 +13,7 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
     visible = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, editable=True)
 
     class Meta:
         app_label = 'products'
@@ -27,9 +28,21 @@ class Product(models.Model):
 
     def update(self, instance, **data):
         instance.title = data.title
+        instance.description = data.description
+        instance.price = data.price
+        instance.discount_price = data.discount_price
+        instance.image = data.image
         instance.slug = self.slug_generator()
+        instance.visible = data.visible
+        instance.update = datetime.now()
         instance.save()
 
     def slug_generator(self):
         """Generate a slug based in the product title."""
         return slugify(self.title)
+
+    def order_queryset(self, queryset, order_by):
+        """Order the posts list queryset."""
+        if order_by is not None:
+            return queryset.order_by(order_by)
+        return queryset.order_by('-created_at')

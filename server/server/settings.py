@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'authapi',
     'carts',
     'products',
     'orders',
@@ -136,3 +138,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_FILE = 'media/'
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = 'media/'

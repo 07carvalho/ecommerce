@@ -17,13 +17,17 @@ class Cart(models.Model):
     def __str__(self):
         return '{0}´s Cart'.format(self.owner.username)
 
-    def get_total(self):
+    def get_total(self) -> float:
         """Calculate the total value of products in the cart"""
         total = 0
         for item in self.cartitem_set.all():
             subtotal = item.quantity * item.product.price
             total += subtotal
         return total
+
+    @staticmethod
+    def create_cart_to_new_user(user: User):
+        Cart.objects.create(owner=user)
 
 
 class CartItem(models.Model):
@@ -39,3 +43,7 @@ class CartItem(models.Model):
 
     def __str__(self):
         return self.product.title
+
+    def update(self, instance, **data):
+        instance.quantity = data.quantity
+        instance.save()

@@ -33,7 +33,7 @@ class CartItemResumeSerializer(serializers.ModelSerializer):
 
 
 class CartItemSerializer(serializers.ModelSerializer):
-
+ 
     class Meta:
         model = CartItem
         fields = '__all__'
@@ -44,3 +44,15 @@ class CartItemSerializer(serializers.ModelSerializer):
         # overriding field to Browsable API show only user's cart in option
         self.fields['cart'] = PrimaryKeyRelatedField(queryset=Cart.objects.filter(owner=user), required=True)
         self.fields['product'] = PrimaryKeyRelatedField(queryset=Product.objects.filter(visible=True), required=True)
+
+
+class CartItemDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+        # exclude = ('cart',)
+        extra_kwargs = {
+            'cart': {'read_only': True},
+            'product': {'read_only': True},
+        }

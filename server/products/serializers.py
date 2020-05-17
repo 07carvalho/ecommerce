@@ -10,7 +10,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = ('visible',)
+        fields = '__all__'
+        extra_kwargs = {
+            'visible': {'write_only': True},
+        }
 
 
 class ProductResumeSerializer(serializers.ModelSerializer):

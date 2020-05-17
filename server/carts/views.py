@@ -1,15 +1,16 @@
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import generics, serializers, status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Cart, CartItem
-from .serializers import CartSerializer, CartItemSerializer
+from .serializers import CartSerializer, CartItemSerializer, CartItemDetailSerializer
 from .permissions import IsOwner, IsOwnerCart
 
 
 class CartDetail(APIView):
     """Get a cart."""
-    description = 'This route is used to get a single cart.'
+    description = 'This route is used to get owner`s cart.'
     serializer_class = CartSerializer
     permission_classes = (IsOwner,)
 
@@ -17,7 +18,7 @@ class CartDetail(APIView):
         try:
             return Cart.objects.get(owner=owner)
         except Cart.DoesNotExist as e:
-            raise serializers.ValidationError({'not_found': _('You has no cart.')})
+            raise serializers.ValidationError({'not_found': _('You have no cart. Contact admin`s site.')})
 
     def get(self, request):
         cart = self.get_object(request.user)
@@ -57,25 +58,34 @@ class CartItemCreate(generics.CreateAPIView, generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CartItemDetail(generics.DestroyAPIView):
+class CartItemDetail(APIView):
 
     description = 'This route is used to remove a single product from user`s cart.'
-    serializer_class = CartItemSerializer
+    serializer_class = CartItemDetailSerializer
     permission_classes = (IsOwnerCart,)
-    queryset = CartItem.objects.all()
 
-    def get_object(self):
+    def get_object(self, pk):
         try:
-            obj = Cart.objects.get(owner=self.request.user, )
+            obj = CartItem.objects.get(pk=pk, cart__owner=self.request.user)
             self.check_object_permissions(self.request, obj)
             return obj
         except Cart.DoesNotExist as e:
             raise serializers.ValidationError({'not_found': _('This product does not exist.')})
 
-    def delete(self, request, pk=None, format=None):
-        cart = self.get_object()
-        try:
-            cart.cartitem_set.get(pk=pk).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except CartItem.DoesNotExist:
-            raise serializers.ValidationError({'not_found': _('This item does not exist.')})
+    def get(self, request, pk=None):
+        cart_item = self.get_object(pk)
+        serailizer = CartItemDetailSerializer(cart_item)
+        return Response(serailizer.data)
+
+    def put(self, request, pk=None):
+        cart_item = self.get_object(pk)
+        serializer = CartItemDetailSerializer(cart_item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk=None):
+        cart_item = self.get_object(pk)
+        cart_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

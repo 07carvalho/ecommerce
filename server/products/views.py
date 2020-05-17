@@ -1,10 +1,11 @@
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import generics, serializers, status
+from rest_framework import generics, filters, serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Product
 from .serializers import ProductSerializer
-from .permissions import IsAdminOrReadOnly
+# from authapi.filters import IsAdminOrListOnlyVisibleFilterBackend
+from authapi.permissions import IsAdminOrReadOnly
 
 
 class ProductList(generics.ListCreateAPIView):
@@ -13,6 +14,23 @@ class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.filter(visible=True)
     serializer_class = ProductSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    # filter_backends = [IsAdminOrListOnlyVisibleFilterBackend]
+    # search_fields = ['title',]
+    # ordering_fields = ['created_at', 'title', 'price',]
+    ordering = ['-created_at']
+
+    # def get_queryset(self):
+    #     if 
+    #     queryset = Product.objects.all()
+
+    #     # filter_field = self.request.query_params.get('filter', None)
+    #     # queryset = Product().filter_queryset(queryset, filter_field)
+
+    #     order_field = self.request.query_params.get('order', None)
+    #     queryset = Product().order_queryset(queryset, order_field)
+
+    #     return queryset
+
 
     def list(self, request):
         queryset = self.get_queryset()
