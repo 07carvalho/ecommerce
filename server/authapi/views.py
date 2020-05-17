@@ -1,6 +1,9 @@
+from django.contrib.auth.models import User
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from .serializers import UserRegisterSerializer, UserLoginSerializer
+from .models import UserAuth
 
 
 class UserCreate(generics.CreateAPIView):
@@ -16,15 +19,15 @@ class UserCreate(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserLogin(generics.RetrieveAPIView):
-    """Login a User."""
+class UserLogin(generics.CreateAPIView):
+    """Do login"""
     description = 'This route is used to login a User.'
     serializer_class = UserLoginSerializer
 
-    def put(self, request, *args, **kwargs):
-        serializer = UserLoginSerializer(data=request.data, context={'request': request})
-        # if serializer.is_valid():
-        print("VALId")
-        serializer.login()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        try:
+            user = UserAuth().do_login(request, request.data)
+            data = UserLoginSerializer(user).data
+            return Response(data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_403_FORBIDDEN)

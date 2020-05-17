@@ -4,7 +4,7 @@ from datetime import datetime
 from django.db import transaction
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from rest_framework import serializers
 from carts.models import Cart
@@ -39,13 +39,13 @@ class UserAuth:
             return new_user
         raise serializers.ValidationError({'email_used': _('This email is already used.')})
 
-    def login(self, request, data):
-        print("OIIIII2222222222")
+    def do_login(self, request, data):
         try:
             user = authenticate(username=data.get('username'), password=data.get('password'))
             if user is not None and user.is_active:
                 login(request, user)
                 self.get_token(user)
+                return user
         except User.DoesNotExist:
             raise serializers.ValidationError({'login_error': _('Email or password wrong.')})
 

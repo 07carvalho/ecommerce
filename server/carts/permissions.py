@@ -7,8 +7,6 @@ class IsOwner(permissions.BasePermission):
     """Object-level permission to only owner admins to edit it."""
 
     def has_object_permission(self, request, view, obj):
-        print("OKOKOKOK")
-        print(request.user.is_authenticated)
         if request.user.is_authenticated:
             # Instance must have an attribute named `owner`.
             return obj.owner == request.user

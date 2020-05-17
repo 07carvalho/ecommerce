@@ -19,7 +19,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return Token.objects.get(user=obj).key
 
     def create(self, validated_data):
-        print("ok")
         return UserAuth().prepare_new_user(validated_data)
 
 
