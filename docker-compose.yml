@@ -1,0 +1,31 @@
+version: '3.7'
+  
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - enetwork
+  api:
+    container_name: ecommerce-api
+    build: ./server
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./server:/app/server
+    ports:
+      - '8000:8000'
+    networks:
+      - enetwork
+    restart: always
+    depends_on:
+      - db
+
+volumes:
+  db:
+
+networks:
+  enetwork:
+      driver: bridge
