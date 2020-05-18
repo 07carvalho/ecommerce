@@ -11,11 +11,14 @@ An e-commerce API with Django
 In the root project, run:
 > docker-compose build
 
-Then, run:
-> docker-compose up
+Then, start the containers in background:
+> docker-compose up -d
+
+Now, run the migrations to load the tables:
+> docker-compose run api python manage.py migrate
 
 For a better experience, use the Browsable API in
-> [localhost:8000/login/](http://localhost:8000/login/)
+> [localhost:8000/api/v1/auth/signin/](http://localhost:8000/api/v1/auth/signin/)
 
 ## API Routes
 #### Create User
